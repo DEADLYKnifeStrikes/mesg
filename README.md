@@ -1,5 +1,15 @@
 # mesg
 
+## Database Setup
+
+This project uses Prisma for database management. Database migrations are committed to Git and applied automatically on deployment.
+
+**Key Points:**
+- Initial migration (`0001_init`) creates all required tables (User, VerificationCode, Contact, Chat, Message)
+- Migrations are located in `packages/api/prisma/migrations/`
+- On Railway, migrations are applied automatically via `prisma migrate deploy` in the start command
+- No manual database setup required
+
 ## Deploying / Building on Railway (API)
 
 ### Important: avoid double-installing dependencies

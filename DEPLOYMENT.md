@@ -222,6 +222,14 @@ curl "https://api.telegram.org/bot<YOUR_BOT_TOKEN>/getWebhookInfo"
 
 ### Database Migrations Not Running
 
+**How Migrations Work:**
+
+Database migrations are handled automatically by Prisma:
+
+1. **Migrations are committed to Git**: All migration files in `packages/api/prisma/migrations/` are version-controlled
+2. **Automatic deployment**: Railway runs `npx prisma migrate deploy` on every deploy (configured in the start command)
+3. **No manual intervention needed**: Migrations apply automatically when you push code changes
+
 **Manually Run Migrations:**
 
 If needed, you can connect to your Railway project via CLI:
@@ -275,20 +283,34 @@ If needed, you can connect to your Railway project via CLI:
 
 ### Database Schema Changes
 
-1. Create migration locally:
+**Initial Setup:**
+The repository includes an initial migration (`0001_init`) that creates all database tables. This migration is automatically applied on first deploy.
+
+**Creating New Migrations:**
+
+When you need to modify the database schema:
+
+1. Update the Prisma schema file:
+   ```bash
+   # Edit packages/api/prisma/schema.prisma
+   ```
+
+2. Create migration locally:
    ```bash
    cd packages/api
    npx prisma migrate dev --name your_migration_name
    ```
 
-2. Commit the migration files:
+3. Commit the migration files:
    ```bash
    git add prisma/migrations
-   git commit -m "Add database migration"
+   git commit -m "Add database migration: your_migration_name"
    git push
    ```
 
-3. Railway will automatically run migrations on deploy via `prisma migrate deploy` in the start command
+4. **Automatic deployment**: Railway will automatically run `prisma migrate deploy` on deploy, applying all pending migrations to the production database.
+
+**Note:** Migration files in `packages/api/prisma/migrations/` are committed to Git and deployed automatically. No manual database setup is required on Railway.
 
 ## Monitoring
 
