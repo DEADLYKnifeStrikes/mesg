@@ -1,7 +1,35 @@
-node_modules
-dist
-.env
-.env.local
-*.log
+# Dependencies
+node_modules/
+
+# Vite cache
+.vite/
+**/.vite/
+
+# Build artifacts
+/dist/
+/build/
+/out/
+/.output/
+/.next/
+
+# Coverage
+coverage/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS / editor
 .DS_Store
-uploads
+.idea/
+.vscode/
+
+# Uploads (project specific)
+uploads/
+**/uploads/
+
+# Env
+.env
+.env.*
