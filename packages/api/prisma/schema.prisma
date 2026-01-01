@@ -1,0 +1,91 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String    @id @default(uuid())
+  email           String    @unique
+  phone           String    @unique // Normalized E.164 format
+  password        String    // Hashed password
+  telegramUserId  String?   @map("telegram_user_id")
+  phoneVerified   Boolean   @default(false) @map("phone_verified")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  sentMessages      Message[]      @relation("SentMessages")
+  chatsAsUser1      Chat[]         @relation("ChatsAsUser1")
+  chatsAsUser2      Chat[]         @relation("ChatsAsUser2")
+  contactsAdded     Contact[]      @relation("ContactsAdded")
+  contactsOf        Contact[]      @relation("ContactsOf")
+  verificationCodes VerificationCode[]
+
+  @@map("users")
+}
+
+model VerificationCode {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  code      String   @unique
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+  expiresAt DateTime @map("expires_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("verification_codes")
+}
+
+model Contact {
+  id         String   @id @default(uuid())
+  userId     String   @map("user_id")
+  contactId  String   @map("contact_id")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  user    User @relation("ContactsAdded", fields: [userId], references: [id], onDelete: Cascade)
+  contact User @relation("ContactsOf", fields: [contactId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, contactId])
+  @@map("contacts")
+}
+
+model Chat {
+  id        String   @id @default(uuid())
+  user1Id   String   @map("user1_id")
+  user2Id   String   @map("user2_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user1    User      @relation("ChatsAsUser1", fields: [user1Id], references: [id], onDelete: Cascade)
+  user2    User      @relation("ChatsAsUser2", fields: [user2Id], references: [id], onDelete: Cascade)
+  messages Message[]
+
+  @@unique([user1Id, user2Id])
+  @@map("chats")
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  chatId    String   @map("chat_id")
+  senderId  String   @map("sender_id")
+  type      String   // 'text', 'voice', 'file'
+  content   String?  // Text content for text messages
+  filePath  String?  @map("file_path") // File path for voice/file messages
+  fileName  String?  @map("file_name") // Original file name
+  fileSize  Int?     @map("file_size") // File size in bytes
+  mimeType  String?  @map("mime_type") // MIME type of the file
+  createdAt DateTime @default(now()) @map("created_at")
+
+  chat   Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  sender User @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@map("messages")
+}
