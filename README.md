@@ -1,57 +1,60 @@
-# MESG - MVP Web Messenger
+# MESG — MVP веб‑мессенджер
 
-A modern web messenger built as a monorepo for deployment on Railway. Features React + VKUI frontend, NestJS backend with PostgreSQL, and real-time messaging via WebSockets.
+Современный веб‑мессенджер, собранный как монорепозиторий для деплоя на Railway. Фронтенд: React + VKUI. Бэкенд: NestJS + PostgreSQL + Prisma. Реалтайм‑сообщения через WebSockets.
 
-## Features
+## Возможности
 
-- 🔐 **Authentication**: Email, phone, and password-based registration
-- 📱 **Phone Verification**: Via Telegram bot (no SMS required)
-- 🔍 **User Search**: Search by normalized E.164 phone number
-- 👥 **Contacts**: Add, list, and manage contacts
-- 💬 **Direct Messaging**: One-on-one chats with real-time updates
-- 📝 **Text Messages**: Send and receive text messages
-- 🎤 **Voice Messages**: Record and send voice messages via browser
-- 📎 **File Attachments**: Upload and share files
-- ⚡ **Real-time**: WebSocket-based live messaging
-- 🎨 **Modern UI**: Built with VKUI components
+- **Аутентификация**: регистрация по email + телефону + паролю
+- **Подтверждение телефона**: через Telegram‑бота (без SMS)
+- **Поиск пользователей**: по телефону (нормализация в E.164)
+- **Контакты**: добавление/просмотр/удаление контактов
+- **Личные сообщения**: чат один‑на‑один с обновлениями в реальном времени
+- **Текстовые сообщения**
+- **Голосовые сообщения**: запись в браузере и отправка
+- **Файлы**: загрузка и отправка вложений
+- **Реалтайм**: Socket.IO
+- **Современный UI**: VKUI
 
-## Tech Stack
+## Технологии
 
-### Backend
-- **NestJS** - Progressive Node.js framework
-- **PostgreSQL** - Relational database
-- **Prisma** - Modern ORM
-- **JWT** - Authentication tokens
-- **Socket.IO** - Real-time WebSocket communication
-- **bcrypt** - Password hashing
-- **libphonenumber-js** - Phone number normalization to E.164
+### Бэкенд
+- **NestJS** — фреймворк для Node.js
+- **PostgreSQL** — база данных
+- **Prisma** — ORM
+- **JWT** — токены авторизации
+- **Socket.IO** — WebSocket‑коммуникации
+- **bcrypt** — хэширование паролей
+- **libphonenumber-js** — нормализация телефонов в E.164
 
-### Frontend
-- **React** - UI library
-- **TypeScript** - Type-safe JavaScript
-- **VKUI** - VK's UI kit for modern interfaces
-- **Vite** - Fast build tool
-- **Socket.IO Client** - WebSocket client
-- **Axios** - HTTP client
+### Фронтенд
+- **React**
+- **TypeScript**
+- **VKUI** — UI‑kit
+- **Vite** — сборка
+- **Socket.IO Client**
+- **Axios**
 
-## Deployment on Railway
+## Деплой на Railway
 
-### Prerequisites
-- GitHub account
-- Railway account (connect it to your GitHub)
-- Telegram bot (for phone verification)
+> Проект задуман как **монорепозиторий** и обычно разворачивается **двумя сервисами** в Railway: `api` и `web`, плюс база **PostgreSQL**.
 
-### Step-by-Step Deployment
+### Требования
+- Аккаунт GitHub
+- Аккаунт Railway (подключён к GitHub)
+- Telegram‑бот (для подтверждения телефона)
 
-#### 1. Create a Telegram Bot
+### Пошагово
 
-1. Open Telegram and search for [@BotFather](https://t.me/botfather)
-2. Send `/newbot` and follow instructions
-3. Save your bot token
-4. Get your bot username (e.g., `your_bot`)
-5. Set webhook URL later: `https://your-api-domain.railway.app/verification/webhook`
+#### 1) Создай Telegram‑бота
 
-#### 2. Push Code to GitHub
+1. Открой Telegram и найди [@BotFather](https://t.me/botfather)
+2. Отправь `/newbot` и следуй инструкциям
+3. Сохрани **token** бота
+4. Узнай **username** бота (например, `your_bot`)
+5. Вебхук настроим позже на URL вида:
+   - `https://<твой-api-домен>.railway.app/verification/webhook`
+
+#### 2) Запушь код в GitHub
 
 ```bash
 git init
@@ -62,286 +65,295 @@ git remote add origin https://github.com/your-username/mesg.git
 git push -u origin main
 ```
 
-#### 3. Create Railway Project
+#### 3) Создай проект в Railway
 
-1. Go to [railway.app](https://railway.app)
-2. Click "New Project"
-3. Select "Deploy from GitHub repo"
-4. Select your `mesg` repository
+1. Открой [railway.app](https://railway.app)
+2. Нажми **New Project**
+3. Выбери **Deploy from GitHub repo**
+4. Выбери репозиторий `mesg`
 
-#### 4. Add PostgreSQL Database
+#### 4) Добавь PostgreSQL
 
-1. In your Railway project, click "New"
-2. Select "Database" → "PostgreSQL"
-3. Railway will automatically create a `DATABASE_URL` variable
+1. В проекте Railway нажми **New**
+2. Выбери **Database → PostgreSQL**
+3. Railway автоматически создаст переменную `DATABASE_URL`
 
-#### 5. Configure API Service
+#### 5) Настрой сервис API
 
-1. Click "New" → "GitHub Repo"
-2. Select your repository
-3. Configure the service:
+1. Нажми **New → GitHub Repo**
+2. Выбери этот же репозиторий
+3. Настройки сервиса:
    - **Name**: `api`
    - **Root Directory**: `packages/api`
    - **Build Command**: `npm install && npx prisma generate && npm run build`
    - **Start Command**: `npx prisma migrate deploy && npm run start:prod`
 
-4. Add environment variables:
-   ```
-   DATABASE_URL=${{Postgres.DATABASE_URL}}
-   JWT_SECRET=<generate-a-random-secret-key>
-   TELEGRAM_BOT_USERNAME=<your-bot-username>
-   FRONTEND_URL=https://your-web-domain.railway.app
-   PORT=3000
-   ```
+4. Добавь переменные окружения:
 
-5. Under Settings → Networking:
-   - Enable "Public Networking"
-   - Note the public URL (e.g., `https://api-production-xxxx.up.railway.app`)
+```text
+DATABASE_URL=${{Postgres.DATABASE_URL}}
+JWT_SECRET=<сгенерируй длинный случайный секрет>
+TELEGRAM_BOT_USERNAME=<username_твоего_бота>
+FRONTEND_URL=https://<домен-web-сервиса>.railway.app
+PORT=3000
+```
 
-#### 6. Configure Web Service
+5. В **Settings → Networking**:
+   - включи **Public Networking**
+   - сохрани публичный URL сервиса (например, `https://api-production-xxxx.up.railway.app`)
 
-1. Click "New" → "GitHub Repo"
-2. Select your repository again
-3. Configure the service:
+#### 6) Настрой сервис Web
+
+1. Нажми **New → GitHub Repo**
+2. Выбери репозиторий снова
+3. Настройки сервиса:
    - **Name**: `web`
    - **Root Directory**: `packages/web`
    - **Build Command**: `npm install && npm run build`
    - **Start Command**: `npm run preview`
 
-4. Add environment variables:
-   ```
-   VITE_API_URL=https://your-api-domain.railway.app
-   VITE_SOCKET_URL=https://your-api-domain.railway.app
-   ```
+4. Добавь переменные окружения:
 
-5. Under Settings → Networking:
-   - Enable "Public Networking"
-   - Note the public URL
-
-#### 7. Configure Telegram Bot Webhook
-
-Use your Telegram bot token to set the webhook:
-
-```bash
-curl -X POST "https://api.telegram.org/bot<YOUR_BOT_TOKEN>/setWebhook?url=https://your-api-domain.railway.app/verification/webhook"
+```text
+VITE_API_URL=https://<твой-api-домен>.railway.app
+VITE_SOCKET_URL=https://<твой-api-домен>.railway.app
 ```
 
-#### 8. Update Environment Variables
+5. В **Settings → Networking**:
+   - включи **Public Networking**
+   - сохрани публичный URL web‑сервиса
 
-Go back to the API service and update `FRONTEND_URL` with your actual web service URL.
+#### 7) Настрой вебхук Telegram
 
-### Environment Variables Reference
-
-#### API Service (`packages/api`)
-
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `DATABASE_URL` | PostgreSQL connection string | Automatically set by Railway |
-| `JWT_SECRET` | Secret key for JWT tokens | `your-very-secret-key-min-32-chars` |
-| `TELEGRAM_BOT_USERNAME` | Your Telegram bot username | `your_bot` |
-| `FRONTEND_URL` | Frontend URL for CORS | `https://web-production-xxxx.up.railway.app` |
-| `PORT` | Server port | `3000` |
-
-#### Web Service (`packages/web`)
-
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `VITE_API_URL` | Backend API URL | `https://api-production-xxxx.up.railway.app` |
-| `VITE_SOCKET_URL` | WebSocket server URL | `https://api-production-xxxx.up.railway.app` |
-
-## Local Development
-
-### Prerequisites
-- Node.js 18+ and npm
-- PostgreSQL database
-- Telegram bot (optional, for testing verification)
-
-### Setup
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/mesg.git
-   cd mesg
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Set up the API:
-   ```bash
-   cd packages/api
-   cp .env.example .env
-   # Edit .env with your database credentials
-   ```
-
-4. Run database migrations:
-   ```bash
-   cd packages/api
-   npx prisma migrate dev
-   ```
-
-5. Set up the web frontend:
-   ```bash
-   cd packages/web
-   cp .env.example .env
-   # Edit .env if needed
-   ```
-
-6. Start development servers:
-   ```bash
-   # From project root
-   npm run dev
-   ```
-
-   This starts both services:
-   - API: http://localhost:3000
-   - Web: http://localhost:5173
-
-### Database Management
+Используй token бота, чтобы выставить webhook:
 
 ```bash
-# Generate Prisma client
+curl -X POST "https://api.telegram.org/bot<YOUR_BOT_TOKEN>/setWebhook?url=https://<твой-api-домен>.railway.app/verification/webhook"
+```
+
+#### 8) Обнови FRONTEND_URL
+
+Вернись в переменные окружения API‑сервиса и обнови `FRONTEND_URL` на реальный URL web‑сервиса.
+
+### Справочник переменных окружения
+
+#### API (`packages/api`)
+
+| Переменная | Описание | Пример |
+|----------|----------|--------|
+| `DATABASE_URL` | строка подключения PostgreSQL | создаётся Railway автоматически |
+| `JWT_SECRET` | секрет для JWT | `your-very-secret-key-min-32-chars` |
+| `TELEGRAM_BOT_USERNAME` | username Telegram‑бота | `your_bot` |
+| `FRONTEND_URL` | URL фронтенда (CORS) | `https://web-production-xxxx.up.railway.app` |
+| `PORT` | порт API | `3000` |
+
+#### Web (`packages/web`)
+
+| Переменная | Описание | Пример |
+|----------|----------|--------|
+| `VITE_API_URL` | URL API | `https://api-production-xxxx.up.railway.app` |
+| `VITE_SOCKET_URL` | URL WebSocket сервера | `https://api-production-xxxx.up.railway.app` |
+
+## Локальная разработка
+
+### Требования
+- Node.js 18+ и npm
+- PostgreSQL
+- Telegram‑бот (опционально, если тестируешь подтверждение)
+
+### Запуск
+
+1. Клонируй репозиторий:
+
+```bash
+git clone https://github.com/your-username/mesg.git
+cd mesg
+```
+
+2. Установи зависимости:
+
+```bash
+npm install
+```
+
+3. Настрой API:
+
+```bash
+cd packages/api
+cp .env.example .env
+# Отредактируй .env (DATABASE_URL и т.д.)
+```
+
+4. Прогони миграции:
+
+```bash
+cd packages/api
+npx prisma migrate dev
+```
+
+5. Настрой Web:
+
+```bash
+cd packages/web
+cp .env.example .env
+# При необходимости отредактируй .env
+```
+
+6. Запусти dev‑сервера:
+
+```bash
+# из корня проекта
+npm run dev
+```
+
+Будут подняты оба сервиса:
+- API: http://localhost:3000
+- Web: http://localhost:5173
+
+### Управление базой (Prisma)
+
+```bash
+# Сгенерировать Prisma client
 cd packages/api
 npx prisma generate
 
-# Create a migration
+# Создать миграцию
+cd packages/api
 npx prisma migrate dev --name your_migration_name
 
-# Apply migrations in production
+# Применить миграции в проде
 npx prisma migrate deploy
 
-# Open Prisma Studio (database GUI)
+# Prisma Studio (GUI)
+cd packages/api
 npx prisma studio
 ```
 
-## Project Structure
+## Структура проекта
 
-```
+```text
 mesg/
 ├── packages/
-│   ├── api/                 # NestJS backend
+│   ├── api/                   # NestJS бэкенд
 │   │   ├── prisma/
-│   │   │   └── schema.prisma  # Database schema
+│   │   │   └── schema.prisma   # схема БД
 │   │   ├── src/
-│   │   │   ├── auth/        # Authentication module
-│   │   │   ├── users/       # Users module
-│   │   │   ├── chats/       # Chats module
-│   │   │   ├── messages/    # Messages module
-│   │   │   ├── contacts/    # Contacts module
-│   │   │   ├── verification/ # Telegram verification
-│   │   │   ├── uploads/     # File uploads
-│   │   │   ├── websocket/   # WebSocket gateway
-│   │   │   └── prisma/      # Prisma service
-│   │   └── uploads/         # Uploaded files storage
-│   └── web/                 # React frontend
+│   │   │   ├── auth/           # аутентификация
+│   │   │   ├── users/          # пользователи
+│   │   │   ├── chats/          # чаты
+│   │   │   ├── messages/       # сообщения
+│   │   │   ├── contacts/       # контакты
+│   │   │   ├── verification/   # подтверждение Telegram
+│   │   │   ├── uploads/        # загрузки
+│   │   │   ├── websocket/      # WebSocket gateway
+│   │   │   └── prisma/         # Prisma service
+│   │   └── uploads/            # место хранения загруженных файлов
+│   └── web/                    # React фронтенд
 │       └── src/
-│           ├── components/  # Reusable components
-│           ├── pages/       # Page components
-│           ├── services/    # API & WebSocket services
-│           ├── hooks/       # React hooks
-│           └── types/       # TypeScript types
-├── package.json             # Root package.json
-└── README.md               # This file
+│           ├── components/
+│           ├── pages/
+│           ├── services/
+│           ├── hooks/
+│           └── types/
+├── package.json
+└── README.md
 ```
 
-## API Endpoints
+## API эндпоинты
 
-### Authentication
-- `POST /auth/register` - Register new user
-- `POST /auth/login` - Login user
+### Аутентификация
+- `POST /auth/register` — регистрация
+- `POST /auth/login` — логин
 
-### Users
-- `GET /users/me` - Get current user
-- `GET /users/search?phone=<phone>` - Search user by phone
-- `GET /users/:id` - Get user by ID
+### Пользователи
+- `GET /users/me` — текущий пользователь
+- `GET /users/search?phone=<phone>` — поиск по телефону
+- `GET /users/:id` — получить пользователя по ID
 
-### Verification
-- `POST /verification/generate` - Generate Telegram verification link
-- `POST /verification/webhook` - Telegram bot webhook (internal)
+### Подтверждение
+- `POST /verification/generate` — получить Telegram‑ссылку подтверждения
+- `POST /verification/webhook` — webhook Telegram‑бота (служебный)
 
-### Contacts
-- `POST /contacts` - Add contact
-- `GET /contacts` - List contacts
-- `DELETE /contacts/:id` - Remove contact
+### Контакты
+- `POST /contacts` — добавить контакт
+- `GET /contacts` — список контактов
+- `DELETE /contacts/:id` — удалить контакт
 
-### Chats
-- `POST /chats` - Create/get chat with user
-- `GET /chats` - List user's chats
-- `GET /chats/:id` - Get chat by ID
+### Чаты
+- `POST /chats` — создать/получить чат с пользователем
+- `GET /chats` — список чатов
+- `GET /chats/:id` — чат по ID
 
-### Messages
-- `POST /messages` - Send message
-- `GET /messages/chat/:chatId?page=1&limit=50` - Get chat messages (paginated)
+### Сообщения
+- `POST /messages` — отправить сообщение
+- `GET /messages/chat/:chatId?page=1&limit=50` — сообщения чата (пагинация)
 
-### Uploads
-- `POST /uploads` - Upload file (multipart/form-data)
-- `GET /uploads/:filename` - Serve uploaded file
+### Загрузки
+- `POST /uploads` — загрузить файл (multipart/form-data)
+- `GET /uploads/:filename` — получить файл
 
-### WebSocket Events
+### WebSocket события
 
-#### Client → Server
-- `send_message` - Send a message
-- `join_chat` - Join chat room
-- `leave_chat` - Leave chat room
+#### Клиент → Сервер
+- `send_message` — отправить сообщение
+- `join_chat` — вступить в комнату чата
+- `leave_chat` — выйти из комнаты
 
-#### Server → Client
-- `new_message` - New message received
-- `error` - Error occurred
+#### Сервер → Клиент
+- `new_message` — новое сообщение
+- `error` — ошибка
 
-## Features Implementation
+## Примечания по реализации
 
-### Phone Normalization
-All phone numbers are normalized to E.164 format using `libphonenumber-js`:
-- Example: `(555) 123-4567` → `+15551234567`
+### Нормализация телефонов
+Все номера приводятся к E.164 через `libphonenumber-js`:
+- пример: `(555) 123-4567` → `+15551234567`
 
-### Password Hashing
-Passwords are hashed using bcrypt with 10 rounds.
+### Хэширование пароля
+Пароли хэшируются bcrypt (10 раундов).
 
-### JWT Authentication
-JWT tokens are valid for 30 days. Include in requests:
-```
+### JWT
+Токены действуют 30 дней. Заголовок запросов:
+
+```text
 Authorization: Bearer <token>
 ```
 
-### File Storage
-Files are stored locally in `./uploads` directory and served statically at `/uploads/:filename`.
+### Хранение файлов
+Файлы сохраняются локально в `./uploads` и раздаются статикой по `/uploads/:filename`.
 
-### Voice Messages
-Recorded in the browser using MediaRecorder API, saved as WebM audio format, and uploaded as files.
+### Голосовые
+Запись в браузере через MediaRecorder, формат обычно WebM, далее отправка как файл.
 
-## Security Notes
-
-- Always use strong JWT secrets in production
-- Keep `.env` files out of version control
-- The `uploads` directory is in `.gitignore`
-- CORS is configured for your frontend URL
-- All API endpoints (except auth) require JWT authentication
+## Безопасность (минимум)
+- используй сильный `JWT_SECRET` в проде
+- не коммить `.env`
+- `uploads` добавлен в `.gitignore`
+- CORS ограничен `FRONTEND_URL`
 
 ## Troubleshooting
 
-### Database Connection Issues
-- Ensure `DATABASE_URL` is correctly set
-- Check PostgreSQL is running (local) or accessible (Railway)
+### Проблемы с подключением к БД
+- проверь `DATABASE_URL`
+- убедись, что PostgreSQL запущен/доступен
 
-### WebSocket Connection Failed
-- Verify `VITE_SOCKET_URL` matches your API URL
-- Check CORS settings in `main.ts`
+### WebSocket не подключается
+- проверь `VITE_SOCKET_URL`
+- проверь CORS/Networking в Railway
 
-### Telegram Verification Not Working
-- Confirm webhook is set correctly
-- Check `TELEGRAM_BOT_USERNAME` is correct
-- Verify bot token is valid
+### Telegram‑подтверждение не работает
+- проверь правильность webhook
+- проверь `TELEGRAM_BOT_USERNAME`
+- проверь token бота
 
-### File Uploads Failing
-- Ensure `uploads` directory exists and is writable
-- Check file size limits (default 10MB)
+### Не грузятся файлы
+- убедись, что папка `uploads` существует и доступна на запись
+- проверь лимит размера (по умолчанию 10MB)
 
-## License
+## Лицензия
 
 MIT
 
-## Support
+## Поддержка
 
-For issues and questions, please open an issue on GitHub.
+Если есть вопросы — создай issue в репозитории.
