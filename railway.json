@@ -1,0 +1,29 @@
+{
+  "version": 2,
+  "services": {
+    "api": {
+      "source": ".",
+      "nixpacks": {
+        "buildCommand": "cd packages/api && npm install && npx prisma generate && npm run build",
+        "startCommand": "cd packages/api && npx prisma migrate deploy && npm run start:prod"
+      },
+      "healthcheck": {
+        "path": "/",
+        "timeout": 300
+      },
+      "regions": ["us-west1"]
+    },
+    "web": {
+      "source": ".",
+      "nixpacks": {
+        "buildCommand": "cd packages/web && npm install && npm run build",
+        "startCommand": "cd packages/web && npm run preview -- --host 0.0.0.0 --port $PORT"
+      },
+      "healthcheck": {
+        "path": "/",
+        "timeout": 300
+      },
+      "regions": ["us-west1"]
+    }
+  }
+}
