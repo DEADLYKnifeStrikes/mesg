@@ -2,6 +2,9 @@
   "name": "@mesg/api",
   "version": "1.0.0",
   "description": "MESG API Backend",
+  "engines": {
+    "node": "20.x"
+  },
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\"",

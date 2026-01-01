@@ -7,6 +7,7 @@ This guide provides step-by-step instructions for deploying the MESG messenger a
 1. **GitHub Account**: Your code must be in a GitHub repository
 2. **Railway Account**: Sign up at [railway.app](https://railway.app) and connect your GitHub account
 3. **Telegram Bot**: Create a bot via [@BotFather](https://t.me/botfather) on Telegram
+4. **Node.js 20.x LTS**: This project requires Node.js 20.x. Railway will automatically use the version specified in `package.json` engines field.
 
 ## Part 1: Create Telegram Bot
 
@@ -19,6 +20,8 @@ This guide provides step-by-step instructions for deploying the MESG messenger a
 5. Save the **bot username** (e.g., `mesg_verifier_bot`)
 
 ## Part 2: Deploy to Railway
+
+> **Note**: This repository includes a `railway.json` configuration file that automatically sets up the correct build and start commands for both services. If Railway detects this file, it will use these settings automatically. The manual configuration steps below are provided for reference and troubleshooting.
 
 ### Step 1: Create New Project
 
@@ -44,16 +47,18 @@ This guide provides step-by-step instructions for deploying the MESG messenger a
 
    **Service Name**: Change to `api`
 
-   **Root Directory**: Set to `packages/api`
+   **Root Directory**: Leave as `.` (repository root) or set to `.`
+   
+   > **Important**: This repository uses npm workspaces. Railway should install dependencies once at the root and use workspace commands to build/start specific packages.
 
    **Build Command**:
    ```bash
-   npm install && npx prisma generate && npm run build
+   npm ci && npm run -w packages/api prisma:generate && npm run -w packages/api build
    ```
 
    **Start Command**:
    ```bash
-   npx prisma migrate deploy && npm run start:prod
+   npm run -w packages/api prisma:deploy && npm run -w packages/api start:prod
    ```
 
 5. Go to **"Variables"** tab and add:
@@ -83,16 +88,16 @@ This guide provides step-by-step instructions for deploying the MESG messenger a
 
    **Service Name**: Change to `web`
 
-   **Root Directory**: Set to `packages/web`
+   **Root Directory**: Leave as `.` (repository root) or set to `.`
 
    **Build Command**:
    ```bash
-   npm install && npm run build
+   npm ci && npm run -w packages/web build
    ```
 
    **Start Command**:
    ```bash
-   npm run preview -- --host 0.0.0.0 --port $PORT
+   npm run -w packages/web preview -- --host 0.0.0.0 --port $PORT
    ```
 
 5. Go to **"Variables"** tab and add:

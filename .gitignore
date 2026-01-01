@@ -1,13 +1,14 @@
 # Dependencies
 node_modules/
+**/node_modules
 
 # Vite cache
 .vite/
 **/.vite/
 
 # Build artifacts
-/dist/
-/build/
+dist/
+build/
 /out/
 /.output/
 /.next/
