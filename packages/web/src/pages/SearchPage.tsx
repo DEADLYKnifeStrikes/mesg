@@ -49,7 +49,8 @@ export const SearchPage = ({ id, onBack, onChatSelected }: SearchPageProps) => {
   const handleAddContact = async (userId: string) => {
     try {
       await addContact(userId);
-      alert('Contact added successfully!');
+      setSearchResult(null);
+      setPhone('');
     } catch (error) {
       console.error('Failed to add contact:', error);
     }

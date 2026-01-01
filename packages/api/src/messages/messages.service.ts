@@ -5,6 +5,12 @@ import { PrismaService } from '../prisma/prisma.service';
 export class MessagesService {
   constructor(private prisma: PrismaService) {}
 
+  async getChatById(chatId: string) {
+    return this.prisma.chat.findUnique({
+      where: { id: chatId },
+    });
+  }
+
   async createMessage(
     chatId: string,
     senderId: string,

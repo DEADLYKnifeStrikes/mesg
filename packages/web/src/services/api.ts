@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { AuthResponse, User, Contact, Chat, Message, MessagesResponse } from '../types';
 
-const API_URL = import.meta.env.VITE_API_URL || '/api';
+const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? '/api' : window.location.origin);
 
 const api = axios.create({
   baseURL: API_URL,

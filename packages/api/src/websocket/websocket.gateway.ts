@@ -89,9 +89,7 @@ export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnec
       client.emit('new_message', message);
 
       // Send to recipient
-      const chat = await this.messagesService['prisma'].chat.findUnique({
-        where: { id: data.chatId },
-      });
+      const chat = await this.messagesService.getChatById(data.chatId);
 
       if (chat) {
         const recipientId = chat.user1Id === userId ? chat.user2Id : chat.user1Id;
