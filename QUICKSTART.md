@@ -64,6 +64,8 @@ npx prisma migrate dev
 npx prisma generate
 ```
 
+**Note:** The initial migration (`0001_init`) is already committed to the repository. This command will apply it to your local database and generate the Prisma Client.
+
 ## 5. Configure Web
 
 ```bash
