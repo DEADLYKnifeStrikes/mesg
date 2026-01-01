@@ -10,6 +10,29 @@ Running a second `npm ci` inside `packages/api` will:
 - waste build time
 - risk creating a nested `node_modules` that conflicts with workspace resolution
 
+### Database Migrations
+
+Prisma migrations are committed to the repository in `packages/api/prisma/migrations/` and will be automatically applied during deployment using `prisma migrate deploy`.
+
+**Creating new migrations:**
+```sh
+cd packages/api
+npx prisma migrate dev --name your_migration_description
+```
+
+This will:
+1. Create a new migration file in `packages/api/prisma/migrations/`
+2. Apply the migration to your local database
+3. Update the Prisma client
+
+After creating a migration, commit it to the repository:
+```sh
+git add packages/api/prisma/migrations
+git commit -m "Add migration: your_migration_description"
+```
+
+On Railway deployment, migrations are applied automatically via the start command: `npx prisma migrate deploy`
+
 ### Recommended Railway commands
 
 Set the Railway **Root Directory** to the repository root.
