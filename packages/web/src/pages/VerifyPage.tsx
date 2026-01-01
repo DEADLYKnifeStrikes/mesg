@@ -8,7 +8,7 @@ import {
   Placeholder,
   PanelHeaderBack,
 } from '@vkontakte/vkui';
-import { Icon28CheckCircleFill, Icon28CancelCircleFill } from '@vkontakte/icons';
+import { Icon28CheckCircleFill } from '@vkontakte/icons';
 import { useAuth } from '../hooks/useAuth';
 import { generateVerificationLink, getCurrentUser } from '../services/api';
 
@@ -64,7 +64,7 @@ export const VerifyPage = ({ id, onBack }: VerifyPageProps) => {
         ) : (
           <>
             <Placeholder
-              icon={<Icon28CancelCircleFill style={{ color: 'orange' }} />}
+              icon={<span style={{ fontSize: '48px' }}>⚠️</span>}
               header="Phone Not Verified"
             >
               Verify your phone number using Telegram bot.

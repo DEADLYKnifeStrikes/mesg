@@ -92,7 +92,6 @@ export const SearchPage = ({ id, onBack, onChatSelected }: SearchPageProps) => {
           <Cell
             before={<Avatar size={48}>{searchResult.email[0].toUpperCase()}</Avatar>}
             subtitle={searchResult.phone}
-            description={searchResult.phoneVerified ? 'Verified' : 'Not verified'}
             after={
               <>
                 <Button

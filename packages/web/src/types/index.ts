@@ -20,9 +20,13 @@ export interface Contact {
 
 export interface Chat {
   id: string;
-  otherUser: User;
+  otherUser?: User;
   lastMessage?: Message;
   updatedAt: string;
+  user1?: User;
+  user2?: User;
+  user1Id?: string;
+  user2Id?: string;
 }
 
 export interface Message {

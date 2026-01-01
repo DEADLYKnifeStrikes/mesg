@@ -17,7 +17,6 @@ import {
   Icon28SearchOutline,
   Icon28UserCircleOutline,
   Icon28CheckCircleFill,
-  Icon28CancelCircleFill,
 } from '@vkontakte/icons';
 import { getUserChats } from '../services/api';
 import { Chat } from '../types';
@@ -63,11 +62,6 @@ export const ChatsListPage = ({
     }
   };
 
-  const formatTime = (date: string) => {
-    const d = new Date(date);
-    return d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-  };
-
   return (
     <Panel id={id}>
       <PanelHeader>MESG</PanelHeader>
@@ -93,7 +87,7 @@ export const ChatsListPage = ({
             chats.map((chat) => (
               <Cell
                 key={chat.id}
-                before={<Avatar size={48}>{chat.otherUser.email[0].toUpperCase()}</Avatar>}
+                before={<Avatar size={48}>{chat.otherUser?.email[0].toUpperCase()}</Avatar>}
                 subtitle={
                   chat.lastMessage
                     ? chat.lastMessage.type === 'text'
@@ -101,10 +95,9 @@ export const ChatsListPage = ({
                       : `[${chat.lastMessage.type}]`
                     : 'No messages yet'
                 }
-                description={chat.lastMessage ? formatTime(chat.lastMessage.createdAt) : ''}
                 onClick={() => onChatSelected(chat.id)}
               >
-                {chat.otherUser.email}
+                {chat.otherUser?.email}
               </Cell>
             ))
           )}
@@ -116,23 +109,21 @@ export const ChatsListPage = ({
           <Cell
             before={<Avatar size={48}>{user?.email[0].toUpperCase()}</Avatar>}
             subtitle={user?.phone}
-            description={
-              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                {user?.phoneVerified ? (
-                  <>
-                    <Icon28CheckCircleFill width={16} height={16} style={{ color: 'green' }} />
-                    Verified
-                  </>
-                ) : (
-                  <>
-                    <Icon28CancelCircleFill width={16} height={16} style={{ color: 'orange' }} />
-                    Not verified
-                  </>
-                )}
-              </div>
-            }
           >
-            {user?.email}
+            <div>{user?.email}</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', marginTop: '4px' }}>
+              {user?.phoneVerified ? (
+                <>
+                  <Icon28CheckCircleFill width={16} height={16} style={{ color: 'green' }} />
+                  Verified
+                </>
+              ) : (
+                <>
+                  <span style={{ width: '16px', height: '16px', display: 'inline-block' }}>⚠️</span>
+                  Not verified
+                </>
+              )}
+            </div>
           </Cell>
 
           {!user?.phoneVerified && (
@@ -144,7 +135,7 @@ export const ChatsListPage = ({
           )}
 
           <Cell>
-            <Button size="l" stretched mode="destructive" onClick={onLogout}>
+            <Button size="l" stretched mode="secondary" onClick={onLogout}>
               Logout
             </Button>
           </Cell>

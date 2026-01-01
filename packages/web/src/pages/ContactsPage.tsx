@@ -68,7 +68,6 @@ export const ContactsPage = ({ id, onBack, onChatSelected }: ContactsPageProps) 
               key={contact.id}
               before={<Avatar size={48}>{contact.email[0].toUpperCase()}</Avatar>}
               subtitle={contact.phone}
-              description={contact.phoneVerified ? 'Verified' : 'Not verified'}
               onClick={() => handleStartChat(contact.id)}
             >
               {contact.email}

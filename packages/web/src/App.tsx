@@ -59,13 +59,11 @@ const AppContent = () => {
             onLogout={logout}
           />
 
-          {selectedChatId && (
-            <ChatPage
-              id="chat"
-              chatId={selectedChatId}
-              onBack={handleBackToChats}
-            />
-          )}
+          <ChatPage
+            id="chat"
+            chatId={selectedChatId || ''}
+            onBack={handleBackToChats}
+          />
 
           <SearchPage
             id="search"
